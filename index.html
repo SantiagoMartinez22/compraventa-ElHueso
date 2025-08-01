@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compraventa ElHueso - Concesionario</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <nav>
+            <div class="logo">Compraventa El Hueso</div>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#vehiculos">Vehículos</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Banner Slider -->
+    <section id="inicio" class="slider">
+        <div class="slide active">
+            <div class="slide-content">
+                <h1>¡Encuentra tu Carro Ideal!</h1>
+                <p>Los mejores vehículos con financiamiento especial</p>
+                <button class="btn">Ver Catálogo</button>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Financiamiento 0% Interés</h1>
+                <p>Llévate tu vehículo hoy mismo</p>
+                <button class="btn">Solicitar Crédito</button>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Garantía Incluida</h1>
+                <p>Todos nuestros vehículos con garantía</p>
+                <button class="btn">Conocer Más</button>
+            </div>
+        </div>
+        
+        <button class="prev" onclick="changeSlide(-1)">❮</button>
+        <button class="next" onclick="changeSlide(1)">❯</button>
+        
+        <div class="dots">
+            <span class="dot active" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+    </section>
+
+    <!-- Sección Nosotros -->
+    <section id="nosotros" class="about">
+        <div class="container">
+            <h2>Sobre Nosotros</h2>
+            <p>Más de 8 años conectando colombianos con sus vehículos ideales</p>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Tu Concesionario de Confianza</h3>
+                    <p>Especializados en vehículos de calidad con las mejores opciones de financiamiento.</p>
+                    
+                    <div class="stats">
+                        <div class="stat">
+                            <h4>5000+</h4>
+                            <p>Vehículos Vendidos</p>
+                        </div>
+                        <div class="stat">
+                            <h4>15+</h4>
+                            <p>Años de Experiencia</p>
+                        </div>
+                        <div class="stat">
+                            <h4>98%</h4>
+                            <p>Clientes Satisfechos</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/RWM4eoJ14FI" 
+                            frameborder="0" allowfullscreen></iframe>
+                            
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galería de Vehículos -->
+    <section id="vehiculos" class="gallery">
+        <div class="container">
+            <h2>Nuestros Vehículos</h2>
+            
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterCars('all', this)">Todos</button>
+                <button class="filter-btn" onclick="filterCars('sedan', this)">Sedán</button>
+                <button class="filter-btn" onclick="filterCars('suv', this)">SUV</button>
+                <button class="filter-btn" onclick="filterCars('hatchback', this)">Hatchback</button>
+            </div>
+            
+            <div class="cars-grid">
+                <div class="car-card" data-category="sedan">
+                    <img src="img/corolla.jpeg" alt="Toyota Corolla">
+                    <div class="car-info">
+                        <h3>Toyota Corolla 2021</h3>
+                        <p>$85.000.000</p>
+                        <button class="btn" onclick="openModal('Toyota Corolla 2021', '$85.000.000')">Ver Detalles</button>
+                    </div>
+                </div>
+                
+                <div class="car-card" data-category="suv">
+                    <img src="img/crv.jpeg" alt="Honda CR-V">
+                    <div class="car-info">
+                        <h3>Honda CR-V 2019</h3>
+                        <p>$120.000.000</p>
+                        <button class="btn" onclick="openModal('Honda CR-V 2019', '$120.000.000')">Ver Detalles</button>
+                    </div>
+                </div>
+                
+                <div class="car-card" data-category="hatchback">
+                    <img src="img/spark.jpeg" alt="Chevrolet Spark">
+                    <div class="car-info">
+                        <h3>Chevrolet Spark 2020</h3>
+                        <p>$45.000.000</p>
+                        <button class="btn" onclick="openModal('Chevrolet Spark 2020', '$45.000.000')">Ver Detalles</button>
+                    </div>
+                </div>
+                
+                <div class="car-card" data-category="sedan">
+                    <img src="img/altima.jpeg" alt="Nissan Altima">
+                    <div class="car-info">
+                        <h3>Nissan Altima 2020</h3>
+                        <p>$190.000.000</p>
+                        <button class="btn" onclick="openModal('Nissan Altima 2024', '$90.000.000')">Ver Detalles</button>
+                    </div>
+                </div>
+                
+                <div class="car-card" data-category="suv">
+                    <img src="img/cx5.jpeg" alt="Mazda CX-5">
+                    <div class="car-info">
+                        <h3>Mazda CX-5 2020</h3>
+                        <p>$110.000.000</p>
+                        <button class="btn" onclick="openModal('Mazda CX-5 2024', '$110.000.000')">Ver Detalles</button>
+                    </div>
+                </div>
+                
+                <div class="car-card" data-category="sedan">
+                    <img src="img/340.jpeg" alt="BMW 340i">
+                    <div class="car-info">
+                        <h3>BMW 340 2026</h3>
+                        <p>$400.000.000</p>
+                        <button class="btn" onclick="openModal('BMW 340i 2026', '$400.000.000')">Ver Detalles</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario de Contacto -->
+    <section id="contacto" class="contact">
+        <div class="container">
+            <h2>Contáctanos</h2>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Dirección</h4>
+                            <p>Carrera 15 #85-32, Medellin, Colombia</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Teléfono</h4>
+                            <p>+57 (1) 234-5678</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>info@compraventaelhueso.com</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="contactForm" class="contact-form">
+                    <input type="text" placeholder="Nombre completo *" required>
+                    <input type="email" placeholder="Email *" required>
+                    <input type="tel" placeholder="Teléfono *" required>
+                    <select>
+                        <option value="">Tipo de vehículo</option>
+                        <option value="sedan">Sedán</option>
+                        <option value="suv">SUV</option>
+                        <option value="hatchback">Hatchback</option>
+                    </select>
+                    <textarea placeholder="Mensaje *" rows="5" required></textarea>
+                    <button type="submit" class="btn">Enviar Mensaje</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Compraventa ElHueso</h3>
+                    <p>Tu concesionario de confianza en Colombia</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Enlaces</h4>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#nosotros">Nosotros</a></li>
+                        <li><a href="#vehiculos">Vehículos</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Carrera 15 #85-32, Medellin, Colombia</p>
+                    <p><i class="fas fa-phone"></i> +57 (1) 234-5678</p>
+                    <p><i class="fas fa-envelope"></i> info@compraventaelhueso.com</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Compraventa ElHueso. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botón WhatsApp -->
+    <div class="whatsapp-btn">
+        <a href="https://wa.me/+5711234567890" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title"></h3>
+            <p id="modal-price"></p>
+            <p>Excelente vehículo con todas las características premium. Contáctanos para más información.</p>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html> 
