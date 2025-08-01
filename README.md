@@ -68,12 +68,6 @@ plataformasT1/
 5. Llenar el formulario de contacto
 6. Hacer click en el botón de WhatsApp
 
-## 📞 Información del Concesionario
-
-**CarrosColombia**
-- **Dirección:** Carrera 15 #85-32, Bogotá, Colombia
-- **Teléfono:** +57 (1) 234-5678
-- **Email:** info@carroscolombia.com
 
 ---
 
