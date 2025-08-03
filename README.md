@@ -68,6 +68,9 @@ plataformasT1/
 5. Llenar el formulario de contacto
 6. Hacer click en el botón de WhatsApp
 
+##  Presentracion Canva
+
+https://www.canva.com/design/DAGvChFJGaY/yrxgnEpCQltpJzoE_Kusuw/edit?utm_content=DAGvChFJGaY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 ---
 
