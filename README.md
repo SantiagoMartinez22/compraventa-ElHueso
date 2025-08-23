@@ -1,77 +1,68 @@
-# CarrosColombia - Landing Page Simple
+# Compraventa ElHueso — Taller 2: Bundle
 
-Landing page para un concesionario de vehículos en Colombia, desarrollada con HTML, CSS y JavaScript vanilla (sin frameworks).
+> **Estado:** ✅ Documentación y métricas listas — (Diapositivas: ⏳ pendientes por el usuario)
 
-## 🚀 Características
+Este README consolida lo necesario para **Taller 2 (Bundle)**: cómo correr el proyecto, qué bundle se usa, evidencias de **minificación/ofuscación/optimización**, métricas **antes vs. después**, y enlaces rápidos a la documentación.
 
-- ✅ **Slider/Banner** - Rotador automático de 3 slides
-- ✅ **Formulario de Contacto** - Con validación básica
-- ✅ **Galería de Vehículos** - Con filtros por categoría
-- ✅ **Navegación Sticky** - Menú fijo en la parte superior
-- ✅ **Header/Footer** - Diseño completo
-- ✅ **Botón WhatsApp** - Flotante y fijo
-- ✅ **Video YouTube** - Embebido en sección nosotros
-- ✅ **Google Fonts** - Tipografía Poppins
-- ✅ **Responsive** - Se adapta a móviles y tablets
-
-## 📁 Archivos
-
-```
-plataformasT1/
-├── index.html          # Página principal
-├── css/styles.css      # Estilos
-├── js/main.js         # JavaScript
-└── README.md          # Documentación
-```
-
-## 🎯 Funcionalidades JavaScript
-
-### Slider
-- Cambio automático cada 5 segundos
-- Botones prev/next
-- Indicadores clickeables
-
-### Navegación
-- Menú hamburguesa para móviles
-- Navegación suave a secciones
-
-### Galería
-- Filtros: Todos, Sedán, SUV, Hatchback
-- Modal con detalles de vehículos
-
-### Formulario
-- Validación básica
-- Mensaje de confirmación
-
-## 🎨 Estilos
-
-- **Colores principales:**
-  - Azul: #1976d2
-  - Verde: #4caf50
-  - Naranja: #ff9800
-
-- **Fuente:** Poppins de Google Fonts
-
-## 📱 Responsive
-
-- **Desktop:** 1024px+
-- **Tablet:** 768px - 1023px
-- **Móvil:** 480px - 767px
-- **Móvil pequeño:** hasta 479px
-
-## 🚀 Cómo usar
-
-1. Abrir `index.html` en cualquier navegador
-2. Navegar por las secciones usando el menú
-3. Probar el slider automático
-4. Filtrar vehículos por categoría
-5. Llenar el formulario de contacto
-6. Hacer click en el botón de WhatsApp
-
-##  Presentracion Canva
-
-https://www.canva.com/design/DAGvChFJGaY/yrxgnEpCQltpJzoE_Kusuw/edit?utm_content=DAGvChFJGaY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+## 🚀 Enlaces rápidos
+- 📘 **Guía de configuración y uso**: [`SETUP_GUIDE.md`](./SETUP_GUIDE.md)
+- 📊 **Análisis del Bundle**: [`BUNDLE_ANALYSIS.md`](./BUNDLE_ANALYSIS.md)
+- 🧪 **Métricas y evidencias (antes/después)**: [`docs/mediciones.md`](./docs/mediciones.md)
+- ✅ **Checklist contra requerimientos del taller**: [`docs/TALLER2_CHECKLIST.md`](./docs/TALLER2_CHECKLIST.md)
+- 🌐 **GitHub Pages**: _(agrega aquí la URL cuando publiques)_
 
 ---
 
-*Landing page desarrollada con HTML, CSS y JavaScript vanilla* 
+## 🧰 Stack del bundle
+- **Parcel 2.12** (bundling, HMR, minificación, tree-shaking, hashing)
+- **Tailwind CSS 3.4 + PostCSS** (preprocesado CSS, autoprefixing, purge)
+- **Optimización de imágenes** (a través de Parcel)
+- **Minificación/Ofuscación** (Terser/CSSnano vía pipeline de producción)
+
+> Detalles y configuración concreta en [`SETUP_GUIDE.md`](./SETUP_GUIDE.md).
+
+## ▶️ Cómo ejecutar
+```bash
+# 1) Instalar dependencias
+npm install
+
+# 2) Desarrollo con HMR
+npm run dev
+
+# 3) Build de producción (minificado/optimizado)
+npm run build
+
+# 4) Previsualizar build (opcional)
+npm run preview
+```
+
+> Requisitos: Node 16+ y npm 8+.
+
+## 🧾 Evidencias clave (resumen)
+- **Minificación + ofuscación JS**: activa en build de producción.
+- **Minificación CSS + purge**: Tailwind + PostCSS.
+- **Optimización de imágenes**: habilitada vía Parcel.
+- **Tree-shaking y hashing**: habilitados.
+- **Métricas y comparativas**: ver [`docs/mediciones.md`](./docs/mediciones.md) y [`BUNDLE_ANALYSIS.md`](./BUNDLE_ANALYSIS.md).
+
+## 🌐 Publicación (GitHub Pages)
+1. Ejecuta `npm run build` y confirma que se genera `dist/`.
+2. Sube el contenido de `dist/` a **gh-pages** (o configura Pages desde la rama `main` apuntando a `/dist`).  
+3. Agrega la **URL de Pages** en la sección de enlaces rápidos de este README.
+
+> Si usas la rama `gh-pages`:
+> ```bash
+> git subtree push --prefix dist origin gh-pages
+> ```
+> o usa la acción de GitHub Pages.
+
+---
+
+## 📝 Referentes y material extra
+- Parcel Docs: https://parceljs.org
+- Tailwind CSS: https://tailwindcss.com
+- PostCSS: https://postcss.org
+
+## 👥 Autores
+- Equipo Compraventa ElHueso (UPB)
+
