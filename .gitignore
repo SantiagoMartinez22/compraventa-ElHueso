@@ -5,8 +5,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Package lock files (keep only one)
-package-lock.json
+# Package lock files (keep npm lock, ignore others)
+# package-lock.json  # Keep this for npm projects
 yarn.lock
 pnpm-lock.yaml
 
