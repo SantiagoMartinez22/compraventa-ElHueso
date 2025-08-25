@@ -1,0 +1,18 @@
+{
+  "compress": {
+    "drop_console": true,
+    "drop_debugger": true,
+    "pure_funcs": ["console.log", "console.info", "console.debug", "console.warn"],
+    "passes": 2
+  },
+  "mangle": {
+    "toplevel": true,
+    "properties": {
+      "regex": "^_"
+    }
+  },
+  "format": {
+    "comments": false,
+    "beautify": false
+  }
+}
