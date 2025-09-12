@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Acceso | CompraVenta El Hueso</title>
+</head>
+<body>
+  <h1>Autenticación</h1>
+  <nav>
+    <a href="./index.html">Inicio</a>
+  </nav>
+
+  <!-- Cliente Supabase -->
+  <script type="module" src="./js/supabaseClient.js"></script>
+
+  <!-- Registro -->
+  <section>
+    <h2>Registro</h2>
+    <form id="signup-form">
+      <input type="email" id="su-email" placeholder="Correo" required />
+      <input type="password" id="su-pass" placeholder="Contraseña" required />
+      <button type="submit">Crear cuenta</button>
+    </form>
+    <p id="su-msg"></p>
+  </section>
+
+  <!-- Login -->
+  <section>
+    <h2>Iniciar sesión</h2>
+    <form id="signin-form">
+      <input type="email" id="si-email" placeholder="Correo" required />
+      <input type="password" id="si-pass" placeholder="Contraseña" required />
+      <button type="submit">Entrar</button>
+    </form>
+    <p id="si-msg"></p>
+  </section>
+
+  <script type="module">
+    // Registro
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('su-email').value.trim();
+      const password = document.getElementById('su-pass').value;
+      const { error } = await window.sb.auth.signUp({ email, password });
+      document.getElementById('su-msg').textContent = error
+        ? error.message
+        : '¡Revisa tu correo para confirmar!';
+    });
+
+    // Login
+    document.getElementById('signin-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('si-email').value.trim();
+      const password = document.getElementById('si-pass').value;
+      const { error } = await window.sb.auth.signInWithPassword({ email, password });
+      document.getElementById('si-msg').textContent = error
+        ? error.message
+        : '¡Bienvenido!';
+      if (!error) location.href = './app.html';
+    });
+  </script>
+</body>
+</html>
