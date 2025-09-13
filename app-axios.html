@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Panel | CompraVenta El Hueso</title>
-  <meta name="description" content="Panel protegido con listado, búsqueda y CRUD básico de vehículos usando Supabase." />
+  <title>Panel con Axios | CompraVenta El Hueso</title>
+  <meta name="description" content="Panel protegido usando Axios para peticiones HTTP con Supabase." />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
@@ -76,6 +76,15 @@
       border-radius: 10px;
       margin-bottom: 25px;
       border-left: 4px solid var(--primary-color);
+    }
+    .axios-badge {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 10px;
     }
     .search-container {
       margin-bottom: 25px;
@@ -216,6 +225,19 @@
       color: #721c24;
       border: 1px solid #f5c6cb;
     }
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     @media (max-width: 768px) {
       .row { grid-template-columns: 1fr; }
       header { padding: 15px 20px; }
@@ -229,19 +251,20 @@
     <header>
       <a href="./index.html"><i class="fas fa-home"></i> Inicio</a>
       <a href="./auth.html"><i class="fas fa-lock"></i> Acceso</a>
-      <a href="./app.html"><i class="fas fa-list"></i> Panel</a>
+      <a href="./app.html"><i class="fas fa-list"></i> Panel Supabase</a>
+      <a href="./app-axios.html"><i class="fas fa-network-wired"></i> Panel Axios</a>
       <span class="muted" id="whoami"></span>
       <button id="logout" title="Cerrar sesión"><i class="fas fa-sign-out-alt"></i> Salir</button>
     </header>
 
     <div class="content">
-      <!-- Cliente Supabase (ruta debe coincidir exactamente con tu repo) -->
-      <script type="module" src="./js/supabaseClient.js"></script>
-
-      <h1><i class="fas fa-car"></i> Gestión de Vehículos</h1>
+      <h1>
+        <i class="fas fa-car"></i> Gestión de Vehículos
+        <span class="axios-badge">AXIOS</span>
+      </h1>
       
       <div class="description">
-        <p><strong>Panel protegido (RLS):</strong> Puedes <strong>agregar</strong> vehículos y <strong>eliminar</strong> solo los que tú hayas creado. La búsqueda funciona por marca o modelo.</p>
+        <p><strong>Panel con Axios:</strong> Esta versión usa Axios para las peticiones HTTP en lugar del cliente Supabase directo. Puedes <strong>agregar</strong> vehículos y <strong>eliminar</strong> solo los que tú hayas creado. La búsqueda funciona por marca o modelo.</p>
       </div>
 
       <!-- Buscador -->
@@ -262,7 +285,10 @@
             <input id="descripcion" placeholder="Descripción (opcional)" />
           </div>
           <div class="actions">
-            <button id="add" class="btn-primary"><i class="fas fa-save"></i> Guardar vehículo</button>
+            <button id="add" class="btn-primary">
+              <span id="add-loading" class="loading" style="display: none;"></span>
+              <i class="fas fa-save" id="add-icon"></i> Guardar vehículo
+            </button>
             <div id="add-msg" class="msg" role="status"></div>
           </div>
         </div>
@@ -281,15 +307,30 @@
               <th><i class="fas fa-cogs"></i> Acciones</th>
             </tr>
           </thead>
-          <tbody id="tbody"></tbody>
+          <tbody id="tbody">
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 40px; color: #666;">
+                <div class="loading" style="margin: 0 auto 10px;"></div>
+                Cargando vehículos...
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
   </div>
 
   <script type="module">
+    import { vehiculosService } from './js/apiService.js';
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
     // --- Utilidades ---
     const COP = (n)=> Number(n||0).toLocaleString('es-CO',{ style:'currency', currency:'COP', maximumFractionDigits:0 });
+
+    // Cliente Supabase para autenticación
+    const SUPABASE_URL = "https://sppzbrmslxadplopnker.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNwcHpicm1zbHhhZHBsb3Bua2VyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU5NzQ4MDAsImV4cCI6MjA1MTU1MDgwMH0.8Q8Q8Q8Q8Q8Q8Q8Q8Q8Q8Q8Q8Q8Q8Q8Q8Q8Q8Q8Q";
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // Función para mostrar mensajes
     function showMessage(elementId, message, isError = false) {
@@ -297,25 +338,33 @@
       msgElement.textContent = message;
       msgElement.className = `msg ${isError ? 'error' : 'success'}`;
       
-      // Limpiar mensaje después de 5 segundos
       setTimeout(() => {
         msgElement.textContent = '';
         msgElement.className = 'msg';
       }, 5000);
     }
 
-    // --- Cliente y protección de ruta ---
-    const sb = window.sb;
-    if (!sb) {
-      alert('No se pudo cargar Supabase. Verifica la ruta ./js/supabaseClient.js');
-      throw new Error('Supabase client missing');
+    // Función para mostrar/ocultar loading
+    function toggleLoading(buttonId, isLoading) {
+      const button = document.getElementById(buttonId);
+      const loading = document.getElementById(buttonId + '-loading');
+      const icon = document.getElementById(buttonId + '-icon');
+      
+      if (isLoading) {
+        loading.style.display = 'inline-block';
+        icon.style.display = 'none';
+        button.disabled = true;
+      } else {
+        loading.style.display = 'none';
+        icon.style.display = 'inline-block';
+        button.disabled = false;
+      }
     }
 
-    // Verificar sesión
+    // --- Verificación de sesión ---
     const { data: sess } = await sb.auth.getSession();
     if (!sess.session) {
       location.href = './auth.html';
-      return;
     }
 
     // Mostrar quién está logueado
@@ -338,27 +387,15 @@
     const qInput = document.getElementById('q');
     let lastQuery = '';
 
-    // --- Carga de datos ---
+    // --- Carga de datos usando Axios ---
     async function load(query='') {
       lastQuery = query;
 
       try {
-        let rq = sb.from('vehiculos')
-          .select('*')
-          .order('created_at', { ascending:false })
-          .limit(500); // por si tienes >100 sembrados
-
-        if (query) {
-          rq = sb.from('vehiculos')
-            .select('*')
-            .or(`marca.ilike.%${query}%,modelo.ilike.%${query}%`)
-            .order('created_at', { ascending:false })
-            .limit(500);
-        }
-
-        const { data, error } = await rq;
+        const { data, error } = await vehiculosService.getAll(query);
+        
         if (error) { 
-          showMessage('add-msg', `Error al cargar datos: ${error.message}`, true);
+          showMessage('add-msg', `Error al cargar datos: ${error.message || error}`, true);
           return; 
         }
 
@@ -401,9 +438,9 @@
             }
 
             try {
-              const { error } = await sb.from('vehiculos').delete().eq('id', id);
+              const { error } = await vehiculosService.delete(id);
               if (error) {
-                showMessage('add-msg', `Error al eliminar: ${error.message}`, true);
+                showMessage('add-msg', `Error al eliminar: ${error.message || error}`, true);
                 return;
               }
               showMessage('add-msg', 'Vehículo eliminado exitosamente ✅');
@@ -419,16 +456,18 @@
       }
     }
 
-    // --- Buscador con pequeña espera (anti-spam de consultas) ---
+    // --- Buscador ---
     let t;
     qInput.addEventListener('input', (e)=>{
       clearTimeout(t);
       t = setTimeout(()=> load(e.target.value.trim()), 200);
     });
 
-    // --- Alta de vehículo ---
+    // --- Alta de vehículo usando Axios ---
     document.getElementById('add').onclick = async ()=>{
       try {
+        toggleLoading('add', true);
+        
         const who = await sb.auth.getUser();
         const payload = {
           user_id: who?.data?.user?.id,
@@ -440,7 +479,7 @@
           descripcion: document.getElementById('descripcion').value.trim() || null
         };
 
-        // Validación mejorada
+        // Validación
         if (!payload.marca || !payload.modelo || !payload.anio || isNaN(payload.precio)) {
           showMessage('add-msg', 'Por favor completa todos los campos obligatorios: marca, modelo, año y precio.', true);
           return;
@@ -456,23 +495,23 @@
           return;
         }
 
-        // Validar URL de imagen si se proporciona
         if (payload.imagen_url && !isValidUrl(payload.imagen_url)) {
           showMessage('add-msg', 'Por favor ingresa una URL de imagen válida.', true);
           return;
         }
 
-        const { error } = await sb.from('vehiculos').insert(payload);
+        const { data, error } = await vehiculosService.create(payload);
         if (error) {
-          showMessage('add-msg', `Error al agregar vehículo: ${error.message}`, true);
+          showMessage('add-msg', `Error al agregar vehículo: ${error.message || error}`, true);
         } else {
-          showMessage('add-msg', '¡Vehículo agregado exitosamente! ✅');
-          // Limpiar inputs
+          showMessage('add-msg', '¡Vehículo agregado exitosamente con Axios! ✅');
           ['marca','modelo','anio','precio','imagen_url','descripcion'].forEach(id => document.getElementById(id).value = '');
           load(lastQuery);
         }
       } catch (err) {
         showMessage('add-msg', 'Error de conexión al agregar vehículo', true);
+      } finally {
+        toggleLoading('add', false);
       }
     };
 

@@ -2,14 +2,11 @@
   "name": "compraventa-elhueso",
   "version": "1.0.0",
   "description": "Sitio web de concesionario de vehículos con Parcel y Tailwind CSS",
-  
   "scripts": {
-    "dev": "parcel index.html auth.html app.html --open",
-    "build": "parcel build index.html auth.html app.html --dist-dir dist --public-url /compraventa-ElHueso/ --no-source-maps",
+    "dev": "parcel index.html auth.html app.html app-axios.html --open",
+    "build": "parcel build index.html auth.html app.html app-axios.html --dist-dir dist --public-url /compraventa-ElHueso/ --no-source-maps",
     "preview": "npx serve dist -l 3000",
     "clean": "rm -rf dist .parcel-cache"
-  }
-
   },
   "keywords": [
     "concesionario",
@@ -19,18 +16,8 @@
   ],
   "author": "Compraventa El Hueso",
   "license": "MIT",
-  "devDependencies": {
-    "@parcel/optimizer-cssnano": "^2.15.4",
-    "@parcel/optimizer-htmlnano": "^2.15.4",
-    "@parcel/optimizer-terser": "^2.15.4",
-    "@parcel/packager-raw-url": "^2.12.0",
-    "@parcel/transformer-sass": "^2.12.0",
-    "@tailwindcss/forms": "^0.5.7",
-    "@tailwindcss/typography": "^0.5.10",
-    "autoprefixer": "^10.4.16",
-    "parcel": "^2.12.0",
-    "postcss": "^8.4.32",
-    "tailwindcss": "^3.4.0"
+  "dependencies": {
+    "axios": "^1.12.1"
   },
   "browserslist": [
     "last 2 versions",
