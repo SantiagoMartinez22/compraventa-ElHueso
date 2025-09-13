@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "Sitio web de concesionario de vehículos con Parcel y Tailwind CSS",
   "scripts": {
-    "dev": "parcel src/index.html --open",
-    "build": "NODE_ENV=production parcel build src/index.html --dist-dir dist --public-url ./ --no-source-maps",
-    "build:gh-pages": "parcel build src/index.html --dist-dir dist --public-url ./",
-    "preview": "parcel serve dist/index.html --port 3000",
+    "dev": "parcel index.html auth.html app.html --open",
+    "build": "parcel build index.html auth.html app.html --dist-dir dist --public-url /compraventa-ElHueso/ --no-source-maps",
+    "preview": "npx serve dist -l 3000",
     "clean": "rm -rf dist .parcel-cache"
   },
   "keywords": [
