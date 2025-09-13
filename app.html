@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel | CompraVenta El Hueso</title>
+  <meta name="description" content="Panel protegido con listado, búsqueda y CRUD básico de vehículos usando Supabase." />
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 16px; line-height: 1.35; }
+    header { display:flex; gap:12px; align-items:center; margin-bottom:16px; flex-wrap: wrap; }
+    header a, header button { padding:.5rem .8rem; border-radius:10px; border:1px solid #9994; background:#0000; cursor:pointer; text-decoration:none; }
+    header button:hover, header a:hover { background:#9991; }
+    h1 { margin: 0 0 10px; }
+    input, button, select, summary { padding:.55rem .75rem; border-radius:10px; border:1px solid #9994; background:#0000; }
+    input{ width:100%; max-width:420px; }
+    details { margin-top:10px; }
+    .row { display:grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap:8px; margin:10px 0; }
+    @media (max-width: 900px){ .row{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    table { border-collapse: collapse; width:100%; margin-top:12px; }
+    th, td { padding:10px 8px; border-bottom:1px solid #ddd4; text-align:left; vertical-align: middle; }
+    td img { border-radius: 8px; display:block; }
+    .muted { opacity:.75; font-size:.95rem; }
+    .right { text-align:right; }
+    .actions { display:flex; gap:6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="./index.html">🏠 Inicio</a>
+    <a href="./auth.html">🔐 Acceso</a>
+    <a href="./app.html">📋 Panel</a>
+    <span class="muted" id="whoami"></span>
+    <button id="logout" title="Cerrar sesión">Salir</button>
+  </header>
+
+  <!-- Cliente Supabase (ruta debe coincidir exactamente con tu repo) -->
+  <script type="module" src="./js/supabaseClient.js"></script>
+
+  <h1>Vehículos</h1>
+  <p class="muted">Lista protegida (RLS). Puedes <strong>agregar</strong> vehículos y <strong>eliminar</strong> solo los que tú hayas creado.</p>
+
+  <!-- Buscador -->
+  <input id="q" placeholder="Buscar por marca o modelo..." aria-label="Buscar por marca o modelo" />
+
+  <!-- Alta -->
+  <details>
+    <summary>➕ Agregar vehículo</summary>
+    <div class="row">
+      <input id="marca" placeholder="Marca" required />
+      <input id="modelo" placeholder="Modelo" required />
+      <input id="anio" type="number" min="1990" max="2100" placeholder="Año" required />
+      <input id="precio" type="number" min="0" step="1" placeholder="Precio (COP)" required />
+      <input id="imagen_url" placeholder="URL imagen (opcional)" />
+      <input id="descripcion" placeholder="Descripción (opcional)" />
+    </div>
+    <div class="actions">
+      <button id="add">Guardar</button>
+      <span id="add-msg" class="muted" role="status"></span>
+    </div>
+  </details>
+
+  <!-- Tabla -->
+  <table>
+    <thead>
+      <tr>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Año</th>
+        <th class="right">Precio</th>
+        <th>Imagen</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <script type="module">
+    // --- Utilidades ---
+    const COP = (n)=> Number(n||0).toLocaleString('es-CO',{ style:'currency', currency:'COP', maximumFractionDigits:0 });
+
+    // --- Cliente y protección de ruta ---
+    const sb = window.sb;
+    if (!sb) {
+      alert('No se pudo cargar Supabase. Verifica la ruta ./js/supabaseClient.js');
+      throw new Error('Supabase client missing');
+    }
+
+    const { data: sess } = await sb.auth.getSession();
+    if (!sess.session) location.href = './auth.html';
+
+    // Mostrar quién está logueado
+    const { data: userData } = await sb.auth.getUser();
+    document.getElementById('whoami').textContent = userData?.user?.email ? `Conectado como ${userData.user.email}` : '';
+
+    // Cerrar sesión
+    document.getElementById('logout').onclick = async () => {
+      await sb.auth.signOut();
+      location.href = './auth.html';
+    };
+
+    // --- Estado & elementos DOM ---
+    const tbody = document.getElementById('tbody');
+    const qInput = document.getElementById('q');
+    let lastQuery = '';
+
+    // --- Carga de datos ---
+    async function load(query='') {
+      lastQuery = query;
+
+      let rq = sb.from('vehiculos')
+        .select('*')
+        .order('created_at', { ascending:false })
+        .limit(500); // por si tienes >100 sembrados
+
+      if (query) {
+        rq = sb.from('vehiculos')
+          .select('*')
+          .or(`marca.ilike.%${query}%,modelo.ilike.%${query}%`)
+          .order('created_at', { ascending:false })
+          .limit(500);
+      }
+
+      const { data, error } = await rq;
+      if (error) { alert(error.message); return; }
+
+      tbody.innerHTML = data.map(v => `
+        <tr>
+          <td>${v.marca}</td>
+          <td>${v.modelo}</td>
+          <td>${v.anio ?? ''}</td>
+          <td class="right">${COP(v.precio)}</td>
+          <td>${v.imagen_url ? `<img src="${v.imagen_url}" alt="Imagen ${v.marca} ${v.modelo}" width="90" height="60" loading="lazy">` : '<span class="muted">—</span>'}</td>
+          <td class="actions">
+            <button data-id="${v.id}" class="del" title="Eliminar">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+
+      // Conectar botones de eliminar
+      document.querySelectorAll('.del').forEach(btn=>{
+        btn.onclick = async () => {
+          const id = btn.getAttribute('data-id');
+          const { error } = await sb.from('vehiculos').delete().eq('id', id);
+          if (error) {
+            // Mensaje típico si no eres dueño: permission denied by policy
+            alert(error.message + '\n\n(Recuerda: solo puedes eliminar vehículos creados por ti)');
+            return;
+          }
+          load(lastQuery);
+        };
+      });
+    }
+
+    // --- Buscador con pequeña espera (anti-spam de consultas) ---
+    let t;
+    qInput.addEventListener('input', (e)=>{
+      clearTimeout(t);
+      t = setTimeout(()=> load(e.target.value.trim()), 200);
+    });
+
+    // --- Alta de vehículo ---
+    document.getElementById('add').onclick = async ()=>{
+      const who = await sb.auth.getUser();
+      const payload = {
+        user_id: who?.data?.user?.id,
+        marca: document.getElementById('marca').value.trim(),
+        modelo: document.getElementById('modelo').value.trim(),
+        anio: Number(document.getElementById('anio').value),
+        precio: Number(document.getElementById('precio').value),
+        imagen_url: document.getElementById('imagen_url').value.trim() || null,
+        descripcion: document.getElementById('descripcion').value.trim() || null
+      };
+
+      // Validación sencilla
+      if (!payload.marca || !payload.modelo || !payload.anio || isNaN(payload.precio)) {
+        document.getElementById('add-msg').textContent = 'Completa marca, modelo, año y precio.';
+        return;
+      }
+
+      const { error } = await sb.from('vehiculos').insert(payload);
+      const msg = document.getElementById('add-msg');
+      if (error) {
+        msg.textContent = error.message;
+      } else {
+        msg.textContent = 'Agregado ✅';
+        // Limpiar inputs
+        ['marca','modelo','anio','precio','imagen_url','descripcion'].forEach(id => document.getElementById(id).value = '');
+        load(lastQuery);
+      }
+    };
+
+    // Carga inicial
+    load();
+  </script>
+</body>
+</html>
