@@ -2,11 +2,14 @@
   "name": "compraventa-elhueso",
   "version": "1.0.0",
   "description": "Sitio web de concesionario de vehículos con Parcel y Tailwind CSS",
+  
   "scripts": {
     "dev": "parcel index.html auth.html app.html --open",
     "build": "parcel build index.html auth.html app.html --dist-dir dist --public-url /compraventa-ElHueso/ --no-source-maps",
     "preview": "npx serve dist -l 3000",
     "clean": "rm -rf dist .parcel-cache"
+  }
+
   },
   "keywords": [
     "concesionario",
